@@ -29,21 +29,21 @@ app.use(cors());
 
 const messageRoute = require('./api/routes/message.route.js');
 
-app.use("/v1/api/message",messageRoute);
+app.use("/v1/api/message", messageRoute);
 
 
 const db = firebase.initializeApp({
-    apiKey: "AIzaSyCFkvTx55DvTZP01VjmlbkhQPUEb86XJTA",
-    authDomain: "realtime-flutter-1b867.firebaseapp.com",
-    databaseURL: "https://realtime-flutter-1b867-default-rtdb.firebaseio.com",
-    projectId: "realtime-flutter-1b867",
-    storageBucket: "realtime-flutter-1b867.appspot.com",
-    messagingSenderId: "794380958759",
-    appId: "1:794380958759:web:1111de432305e1ae9ae202"
+    apiKey: "AIzaSyDO92qWJUY0DN1_4pVU3Ws6bVRD3ovMiQY",
+    authDomain: "esp32-realtime-813e1.firebaseapp.com",
+    databaseURL: "https://esp32-realtime-813e1-default-rtdb.firebaseio.com",
+    projectId: "esp32-realtime-813e1",
+    storageBucket: "esp32-realtime-813e1.appspot.com",
+    messagingSenderId: "376650722360",
+    appId: "1:376650722360:web:8ce81f4e3e5b10fa6fcacd",
 });
 
 var databaseDB = db.database();
-databaseDB.ref("notification/status").set("yes");
+// databaseDB.ref("notification/status").set("yes");
 
 const sendMessage = (token, title, body) => {
     var message = {
@@ -76,9 +76,8 @@ const sendMessage = (token, title, body) => {
         }
     })
 }
-
 setInterval(() => {
-    databaseDB.ref('notification/status').once('value')
+    databaseDB.ref('ESP32_Device/notification/status').once('value')
         .then(function (snapshot) {
             if (snapshot.val() == "yes") {
                 databaseDB.ref('fcm-token/token').once('value')
@@ -86,7 +85,7 @@ setInterval(() => {
                         const token = snapshot_in.val();
                         console.log(token);
                         sendMessage(token, 'Warning', "Có cái đầu buồi vào nhà bạn");
-                        databaseDB.ref("notification/status").set("no");
+                        databaseDB.ref("ESP32_Device/notification/status").set("no");
                     })
             } else {
                 console.log("no")

@@ -7,6 +7,7 @@ const PORT = process.env.PORT || 5000;
 var bodyParser = require('body-parser')
 const firebase = require('firebase');
 const FCM = require('fcm-node')
+const Warning = require('./api/models/warning.model');
 
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
@@ -28,8 +29,10 @@ mongoose.connect(
 app.use(cors());
 
 const messageRoute = require('./api/routes/message.route.js');
+const warningRoute = require('./api/routes/warning.route.js');
 
 app.use("/v1/api/message", messageRoute);
+app.use("/v1/api/warning", warningRoute);
 
 
 const db = firebase.initializeApp({
@@ -43,7 +46,7 @@ const db = firebase.initializeApp({
 });
 
 var databaseDB = db.database();
-// databaseDB.ref("notification/status").set("yes");
+// databaseDB.ref("ESP32_Device/notification/status").set("yes");
 
 const sendMessage = (token, title, body) => {
     var message = {
@@ -66,12 +69,13 @@ const sendMessage = (token, title, body) => {
             console.log("Something has gone wrong!")
         } else {
 
-            console.log("Successfully sent with response: ", response)
-            const add_notification = new Notification({
-                token: req.body.token,
-                title: req.body.title,
-                content: req.body.body
+            console.log("Successfully sent with response: ", response);
+
+            const add_warning = new Warning({
+                title: title,
+                body: body
             })
+            add_warning.save();
 
         }
     })
